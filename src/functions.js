@@ -8,7 +8,7 @@ const createBoard = (rows, columns) => {
                 flagged: false,
                 mined: false,
                 exploded: false,
-                nearMines: 0,
+                nearMines: 0
             }
         })
     })
@@ -18,13 +18,13 @@ const spreadMines = (board, minesAmount) => {
     const rows = board.length
     const columns = board[0].length
     let minesPlanted = 0
-
+    
     while (minesPlanted < minesAmount) {
         const rowSel = parseInt(Math.random() * rows, 10)
         const columnSel = parseInt(Math.random() * columns, 10)
 
         if (!board[rowSel][columnSel].mined) {
-            board[rowSel][columnSel.mined] = true
+            board[rowSel][columnSel].mined = true
             minesPlanted++
         }
     }
@@ -52,7 +52,7 @@ const getNeighbors = (board, row, column) => {
         columns.forEach(c => {
             const diferent = r !== row || c !== column
             const validRow = r >= 0 && r < board.length
-            const validColumn = c >= 0 && cloneBoard < board[0].length
+            const validColumn = c >= 0 && c < board[0].length
             if (diferent && validRow && validColumn) {
                 neighbors.push(board[r][c])
             }
@@ -83,23 +83,29 @@ const openField = (board, row, column) => {
 }
 
 const fields = board => [].concat(...board)
-
 const hadExplosion = board => fields(board)
     .filter(field => field.exploded).length > 0
-
-const pedding = field => (field.mined && !field.flagged)
+const pendding = field => (field.mined && !field.flagged)
     || (!field.mined && !field.opened)
-
-const wonGame = board => fields(board).filter(pedding).length === 0
-
+const wonGame = board => fields(board).filter(pendding).length === 0
 const showMines = board => fields(board).filter(field => field.mined)
     .forEach(field => field.opened = true)
 
-export {
+const invertFlag = (board, row, column) => {
+    const field = board[row][column]
+    field.flagged = !field.flagged
+}
+
+const flagsUsed = board => fields(board)
+    .filter(field => field.flagged).length
+
+export { 
     createMinedBoard,
     cloneBoard,
     openField,
     hadExplosion,
     wonGame,
-    showMines
+    showMines,
+    invertFlag,
+    flagsUsed
 }
